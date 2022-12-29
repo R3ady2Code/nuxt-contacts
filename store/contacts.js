@@ -33,7 +33,28 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchContacts({ commit }) {
+  async fetchContacts({ commit, getters }, { activeSort }) {
+    const sorter = (activeSort) => {
+      console.log(activeSort)
+      if (activeSort.value === 'name') {
+        const newContactsList = [...getters.getContacts].sort((a, b) =>
+          a.firstName.localeCompare(b.firstName)
+        )
+        commit('setContacts', newContactsList)
+      }
+      if (activeSort.value === 'create') {
+        const newContactsList = [...getters.getContacts].sort((a, b) => {
+          if (a.createTime < b.createTime) {
+            return 1
+          }
+          if (a.createTime > b.createTime) {
+            return -1
+          }
+          return 0
+        })
+        commit('setContacts', newContactsList)
+      }
+    }
     try {
       commit('setLoading', true)
       commit('setContacts', [])
@@ -41,6 +62,7 @@ export const actions = {
       querySnapshot?.forEach((doc) => {
         commit('addContact', { id: doc.id, ...doc.data() })
       })
+      sorter(activeSort)
       commit('setLoading', false)
     } catch (error) {
       console.log(error.message)

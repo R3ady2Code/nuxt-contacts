@@ -24,48 +24,18 @@ export default {
     sorts() {
       return this.$store.getters['sorts/getAllSorts']
     },
-    allContacts() {
-      return this.$store.getters['contacts/getContacts']
-    },
   },
   methods: {
     clickToSort(sort) {
       this.$store.commit('sorts/setSort', sort)
     },
-    sorter() {
-      if (this.activeSort.value === 'name') {
-        const newContactsList = [...this.allContacts].sort((a, b) =>
-          a.firstName.localeCompare(b.firstName)
-        )
-        this.$store.commit('contacts/setContacts', newContactsList)
-      }
-      if (this.activeSort.value === 'create') {
-        const newContactsList = [...this.allContacts].sort((a, b) => {
-          if (a.createTime < b.createTime) {
-            return 1
-          }
-          if (a.createTime > b.createTime) {
-            return -1
-          }
-          return 0
-        })
-        this.$store.commit('contacts/setContacts', newContactsList)
-      }
-    },
-  },
-  mounted() {
-    this.sorter()
-    console.log()
   },
   watch: {
     activeSort() {
-      this.sorter()
+      this.$store.dispatch('contacts/fetchContacts', {
+        activeSort: this.activeSort,
+      })
     },
-    route() {
-      this.sorter()
-      console.log(111)
-    },
-    //доделать сортировку контактов
   },
 }
 </script>

@@ -29,7 +29,9 @@ export default {
   },
   async fetch() {
     if (!this.isBackground) {
-      await this.$store.dispatch('contacts/fetchContacts')
+      await this.$store.dispatch('contacts/fetchContacts', {
+        activeSort: this.$store.getters['sorts/getActiveSort'],
+      })
     }
   },
   computed: {
@@ -38,6 +40,9 @@ export default {
     },
     contacts() {
       return this.$store.getters['contacts/getContacts']
+    },
+    activeSort() {
+      return this.$store.getters['sorts/getActiveSort']
     },
   },
 }
