@@ -1,19 +1,18 @@
 <template>
   <div>
     <h1 v-if="!contacts.length && isLoading">Loading...</h1>
-    <TransitionGroup
+    <transition-group
       v-if="contacts && !isLoading"
-      name="list"
+      name="contacts-list"
       tag="ul"
       class="contacts-list"
-      :duration="1000"
     >
       <Contact
         v-for="contact in contacts"
-        :key="contact.id"
+        :key="contact.id + contact.name"
         :contact="contact"
       />
-    </TransitionGroup>
+    </transition-group>
     <h1 v-if="!contacts.length && !isLoading" class="text-center font-semibold">
       You don't have any contacts yet. Click
       <nuxt-link to="/contact/create" class="text-blue">here</nuxt-link> to
@@ -29,9 +28,8 @@ export default {
   },
   async fetch() {
     if (!this.isBackground) {
-      await this.$store.dispatch('contacts/fetchContacts', {
-        activeSort: this.$store.getters['sorts/getActiveSort'],
-      })
+      await this.$store.dispatch('contacts/fetchContacts')
+      this.$sorter()
     }
   },
   computed: {
@@ -50,22 +48,20 @@ export default {
 
 <style lang="scss">
 .contacts-list {
-  @apply border-t-2 mb-3;
+  @apply border-t-2 mb-3 relative;
 }
 
-.list-move,
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease-in-out;
-}
-
-.list-enter-from,
-.list-leave-to {
+.contacts-list-enter {
   opacity: 0;
-  transform: translateX(-100px);
+  transform: translateY(40px);
 }
 
-.list-leave-active {
+.contacts-list-leave-to,
+.contacts-list-leave-active {
+  opacity: 0;
+  transform: translateX(500px);
+}
+.contacts-list-leave-active {
   position: absolute;
 }
 </style>

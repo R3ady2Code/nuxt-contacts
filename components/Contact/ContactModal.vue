@@ -12,7 +12,13 @@
         <UIButton class="change-btn" size="lg"> Change </UIButton>
       </div>
       <div class="contact-modal__avatar">
-        <img :src="require('../../static/default-avatar.png')" alt="Avatar" />
+        <img
+          v-if="!contact.avatar.ref"
+          :src="require('../../static/default-avatar.png')"
+          alt="Avatar"
+          height="80"
+        />
+        <img v-else :src="contact.avatar.url" alt="Avatar" height="80" />
         <h2 v-if="!contact.lastName">{{ contact.firstName }}</h2>
         <h2 v-if="contact.lastName.length">
           {{ contact.firstName + ' ' + contact.lastName }}

@@ -32,9 +32,7 @@ export default {
   },
   watch: {
     activeSort() {
-      this.$store.dispatch('contacts/fetchContacts', {
-        activeSort: this.activeSort,
-      })
+      this.$sorter()
     },
   },
 }

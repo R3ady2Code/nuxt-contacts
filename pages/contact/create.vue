@@ -5,8 +5,20 @@
       <UIButton size="lg" :onClick="clickToCreate">Done</UIButton>
     </div>
     <div class="create-user__avatar">
-      <img :src="require('../../static/default-avatar.png')" alt="Avatar" />
-      <UIButton>add photo</UIButton>
+      <img
+        v-if="!newContact.avatar.ref"
+        :src="require('../../static/default-avatar.png')"
+        alt="Avatar"
+        height="96"
+      />
+      <img v-else :src="newContact.avatar.url" alt="Avatar" height="96" />
+      <UIButton :onClick="clickToInput">add photo</UIButton>
+      <input
+        type="file"
+        ref="inputFile"
+        class="hidden"
+        @change="(e) => uploadAvatar(e.target.files[0])"
+      />
     </div>
     <div class="create-user__head-info">
       <UIInput v-model="newContact.firstName" placeholder="First Name" />
@@ -35,9 +47,13 @@
 </template>
 
 <script>
+import { storage } from '@/plugins/firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+
 export default {
   data: () => ({
     newContact: {
+      avatar: { ref: null, url: null },
       firstName: '',
       lastName: '',
       company: '',
@@ -49,6 +65,12 @@ export default {
       notes: '',
     },
   }),
+  computed: {
+    async avatarUrl() {
+      const result = console.log(result)
+      return result
+    },
+  },
   methods: {
     async clickToCreate() {
       const contact = { ...this.newContact, createTime: Date.now() }
@@ -57,6 +79,17 @@ export default {
     },
     clickToPrev() {
       this.$router.push('/')
+    },
+    clickToInput() {
+      this.$refs.inputFile.click()
+    },
+    async uploadAvatar(file) {
+      if (file) {
+        const imageRef = ref(storage, `images/${file.name}`)
+        await uploadBytes(imageRef, file)
+        this.newContact.avatar.ref = `images/${file.name}`
+        this.newContact.avatar.url = await getDownloadURL(imageRef)
+      }
     },
   },
 }

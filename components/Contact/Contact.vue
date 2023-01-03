@@ -1,7 +1,21 @@
 <template>
-  <li class="contact" @click="onClickToContact">
-    <div class="contact__avatar">
-      <img :src="require('../../static/default-avatar.png')" alt="Avatar" />
+  <li class="contact contacts-list-item" @click="onClickToContact">
+    <div
+      class="contact__avatar"
+      :style="{
+        'background-image': `url(${
+          !contact.avatar.url
+            ? require('../../static/default-avatar.png')
+            : contact.avatar.url
+        })`,
+      }"
+    >
+      <!-- <img
+        v-if="!contact.avatar.ref"
+        :src="require('../../static/default-avatar.png')"
+        alt="Avatar"
+      />
+      <img v-else :src="contact.avatar.url" alt="Avatar" /> -->
     </div>
     <h3 :class="{ 'font-semibold': !contact.lastName }" class="mr-1">
       {{ contact.firstName }}
@@ -38,9 +52,12 @@ export default {
 .contact {
   @apply flex items-center border-b-2 p-2 transition-all duration-100 cursor-pointer;
   &__avatar {
-    @apply w-10 h-10 mr-2;
+    @apply w-10 h-10 rounded-full mr-2 relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
     img {
-      @apply rounded-full;
+      @apply w-auto h-full absolute;
     }
   }
   &:hover {
@@ -53,6 +70,10 @@ export default {
   &:hover {
     @apply text-secondary;
   }
+}
+
+.contacts-list-item {
+  transition: all 0.5s;
 }
 
 .fa-xmark {
