@@ -9,16 +9,21 @@
         <UIButton :onClick="clickToClose">
           <font-awesome-icon icon="fa-solid fa-xmark" />
         </UIButton>
-        <UIButton class="change-btn" size="lg"> Change </UIButton>
+        <UIButton class="change-btn" size="lg" :onClick="clickToChange">
+          Change
+        </UIButton>
       </div>
-      <div class="contact-modal__avatar">
-        <img
-          v-if="!contact.avatar.ref"
-          :src="require('../../static/default-avatar.png')"
-          alt="Avatar"
-          height="80"
-        />
-        <img v-else :src="contact.avatar.url" alt="Avatar" height="80" />
+      <div class="contact-modal__avatar-container">
+        <div
+          class="contact-modal__avatar"
+          :style="{
+            'background-image': `url(${
+              !contact.avatar.url
+                ? require('../../static/default-avatar.png')
+                : contact.avatar.url
+            })`,
+          }"
+        ></div>
         <h2 v-if="!contact.lastName">{{ contact.firstName }}</h2>
         <h2 v-if="contact.lastName.length">
           {{ contact.firstName + ' ' + contact.lastName }}
@@ -92,7 +97,11 @@ export default {
     },
   },
   methods: {
+    clickToChange() {
+      this.$router.push(`/contact/change/${this.contactId}`)
+    },
     clickToClose() {
+      this.$store.commit('contact/setSelected', null)
       this.$router.push('/')
     },
     clickToFavorite() {},
@@ -120,16 +129,22 @@ export default {
       @apply pb-1;
     }
   }
-  &__avatar {
+  &__avatar-container {
     @apply mb-2 flex flex-col items-center gap-1;
-    img {
-      @apply mx-auto rounded-full max-h-20;
-    }
     h2 {
-      @apply text-xl text-slate-800 font-semibold;
+      @apply text-xl text-slate-800 font-semibold text-center;
     }
     span {
       @apply font-extralight text-slate-500;
+    }
+  }
+  &__avatar {
+    @apply w-20 h-20 rounded-full mr-2 relative;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    img {
+      @apply w-auto h-full absolute;
     }
   }
   &__buttons {

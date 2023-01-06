@@ -1,18 +1,23 @@
 <template>
-  <div class="create-user">
-    <div class="create-user__header">
+  <div class="contact-page">
+    <div class="contact-page__header">
       <UIButton size="lg" :onClick="clickToPrev">&lt; Prev</UIButton>
       <UIButton size="lg" :onClick="clickToCreate">Done</UIButton>
     </div>
-    <div class="create-user__avatar">
-      <img
-        v-if="!newContact.avatar.ref"
-        :src="require('../../static/default-avatar.png')"
-        alt="Avatar"
-        height="96"
-      />
-      <img v-else :src="newContact.avatar.url" alt="Avatar" height="96" />
-      <UIButton :onClick="clickToInput">add photo</UIButton>
+    <div class="contact-page__avatar-container" @click="clickToInput">
+      <div
+        class="contact-page__avatar"
+        :style="{
+          'background-image': `url(${
+            !newContact.avatar.url
+              ? require('../../static/default-avatar.png')
+              : newContact.avatar.url
+          })`,
+        }"
+      ></div>
+      <button class="ui-button">
+        <span ref="spanBtnPhoto"> add photo </span>
+      </button>
       <input
         type="file"
         ref="inputFile"
@@ -20,12 +25,12 @@
         @change="(e) => uploadAvatar(e.target.files[0])"
       />
     </div>
-    <div class="create-user__head-info">
+    <div class="contact-page__head-info">
       <UIInput v-model="newContact.firstName" placeholder="First Name" />
       <UIInput v-model="newContact.lastName" placeholder="Last Name" />
       <UIInput v-model="newContact.company" placeholder="Company" />
     </div>
-    <div class="create-user__phone">
+    <div class="contact-page__phone">
       <UIInput v-model="newContact.phone" placeholder="Phone" borders />
     </div>
     <div class="mb-6">
@@ -40,7 +45,7 @@
     <div class="mb-6">
       <UIInput v-model="newContact.birthday" placeholder="Birthday" borders />
     </div>
-    <div class="create-user__notes">
+    <div class="contact-page__notes">
       <textarea v-model="newContact.notes" placeholder="Notes" />
     </div>
   </div>
@@ -64,11 +69,14 @@ export default {
       birthday: '',
       notes: '',
     },
+    btnSpan: 'add photo',
   }),
   computed: {
-    async avatarUrl() {
-      const result = console.log(result)
-      return result
+    isHasAvatar: {
+      get() {
+        return !!this.newContact.avatar.ref
+      },
+      cache: false,
     },
   },
   methods: {
@@ -87,8 +95,11 @@ export default {
       if (file) {
         const imageRef = ref(storage, `images/${file.name}`)
         await uploadBytes(imageRef, file)
-        this.newContact.avatar.ref = `images/${file.name}`
-        this.newContact.avatar.url = await getDownloadURL(imageRef)
+        this.$set(this.newContact, 'avatar', {
+          ref: `images/${file.name}`,
+          url: await getDownloadURL(imageRef),
+        })
+        this.$refs.spanBtnPhoto.innerHTML = 'change photo'
       }
     },
   },
@@ -96,15 +107,25 @@ export default {
 </script>
 
 <style lang="scss">
-.create-user {
+.contact-page {
   @apply flex flex-col pt-16 max-w-lg mx-auto;
   &__header {
     @apply flex justify-between mb-4;
   }
   &__avatar {
+    @apply w-20 h-20 rounded-full mr-2 relative mb-2;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+  }
+  &__avatar-container {
     @apply flex flex-col items-center cursor-pointer mb-8;
-    img {
-      @apply rounded-full max-h-24 mb-2;
+    &:hover {
+      .ui-button {
+        span {
+          @apply text-sky-700;
+        }
+      }
     }
   }
   &__head-info {

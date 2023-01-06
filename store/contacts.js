@@ -1,5 +1,12 @@
 import { fireDB } from '~/plugins/firebase'
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from 'firebase/firestore'
 
 const contactsRef = collection(fireDB, 'contacts')
 
@@ -63,5 +70,12 @@ export const actions = {
     } catch (error) {
       console.log(error.message)
     }
+  },
+  async updateContact(_, { contact, contactId }) {
+    try {
+      console.log(contactId)
+      const contactDoc = await doc(fireDB, 'contacts', contactId)
+      await updateDoc(contactDoc, contact)
+    } catch (error) {}
   },
 }

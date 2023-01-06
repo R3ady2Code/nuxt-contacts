@@ -9,14 +9,7 @@
             : contact.avatar.url
         })`,
       }"
-    >
-      <!-- <img
-        v-if="!contact.avatar.ref"
-        :src="require('../../static/default-avatar.png')"
-        alt="Avatar"
-      />
-      <img v-else :src="contact.avatar.url" alt="Avatar" /> -->
-    </div>
+    ></div>
     <h3 :class="{ 'font-semibold': !contact.lastName }" class="mr-1">
       {{ contact.firstName }}
     </h3>
