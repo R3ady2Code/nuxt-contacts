@@ -29,7 +29,17 @@
       <UIInput v-model="changingContact.company" placeholder="Company" />
     </div>
     <div class="contact-page__phone">
-      <UIInput v-model="changingContact.phone" placeholder="Phone" borders />
+      <client-only>
+        <phone-mask-input
+          v-model="changingContact.phone"
+          autoDetectCountry
+          showFlag
+          placeholder="Phone"
+          wrapperClass="wrapper-input-phone ui-input_borders"
+          inputClass="ui-input"
+          flagClass="flag-input-phone"
+        />
+      </client-only>
     </div>
     <div class="mb-6">
       <UIInput v-model="changingContact.email" placeholder="E-mail" borders />

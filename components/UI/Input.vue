@@ -21,9 +21,9 @@ export default {
 
 <style lang="scss">
 .ui-input {
-  @apply bg-bgColor border-y-slate-400 placeholder-slate-400 py-2 text-lg outline-none w-full;
+  @apply bg-bgColor border-y-slate-400  placeholder-slate-400 py-2 text-lg outline-none w-full;
   &_borders {
-    @apply border-y-2;
+    @apply border-y-slate-400 border-y-2;
   }
 }
 </style>

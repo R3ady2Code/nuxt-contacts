@@ -30,8 +30,19 @@
       <UIInput v-model="newContact.lastName" placeholder="Last Name" />
       <UIInput v-model="newContact.company" placeholder="Company" />
     </div>
+
     <div class="contact-page__phone">
-      <UIInput v-model="newContact.phone" placeholder="Phone" borders />
+      <client-only>
+        <phone-mask-input
+          v-model="newContact.phone"
+          autoDetectCountry
+          showFlag
+          placeholder="Phone"
+          wrapperClass="wrapper-input-phone ui-input_borders"
+          inputClass="ui-input"
+          flagClass="flag-input-phone"
+        />
+      </client-only>
     </div>
     <div class="mb-6">
       <UIInput v-model="newContact.email" placeholder="E-mail" borders />
@@ -71,14 +82,6 @@ export default {
     },
     btnSpan: 'add photo',
   }),
-  computed: {
-    isHasAvatar: {
-      get() {
-        return !!this.newContact.avatar.ref
-      },
-      cache: false,
-    },
-  },
   methods: {
     async clickToCreate() {
       const contact = { ...this.newContact, createTime: Date.now() }
@@ -140,5 +143,11 @@ export default {
       @apply w-full text-lg border-y-slate-400 placeholder-slate-400 border-y-2 py-2 h-40 resize-none overflow-y-auto outline-none;
     }
   }
+}
+
+.wrapper-input-phone {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 </style>
